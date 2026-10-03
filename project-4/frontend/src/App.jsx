@@ -4,7 +4,7 @@ import './App.css'
 
 // Set VITE_API_URL in Amplify (App settings > Environment variables). No trailing slash.
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
-const COFFEE_URL = `${API_URL}/coffee`
+const PRODUCT_URL = `${API_URL}/product`
 
 async function request(url, options = {}) {
   const headers = options.body ? { 'Content-Type': 'application/json' } : {}
@@ -24,7 +24,7 @@ async function request(url, options = {}) {
   return data
 }
 
-// The getCoffee Lambda returns the raw DynamoDB response:
+// The getProduct Lambda returns the raw DynamoDB response:
 //   all items -> { Items: [...] }    one item -> { Item: {...} }
 // This also copes with a plain array / object in case the response shape changes.
 function toList(data) {
@@ -37,10 +37,10 @@ function toItem(data) {
   return data?.Item ?? data ?? null
 }
 
-const emptyForm = { coffeeId: '', name: '', price: '', available: false }
+const emptyForm = { productId: '', name: '', price: '', available: false }
 
 export default function App() {
-  const [coffees, setCoffees] = useState([])
+  const [products, setProducts] = useState([])
   const [form, setForm] = useState(emptyForm)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -50,11 +50,11 @@ export default function App() {
   const [editForm, setEditForm] = useState({ name: '', price: '', available: false })
   const [detail, setDetail] = useState(null)
 
-  const loadCoffees = async () => {
+  const loadProducts = async () => {
     try {
       setError('')
-      const data = await request(COFFEE_URL)
-      setCoffees(toList(data))
+      const data = await request(PRODUCT_URL)
+      setProducts(toList(data))
     } catch (err) {
       setError(err.message)
     } finally {
@@ -67,29 +67,29 @@ export default function App() {
       setLoading(false)
       return
     }
-    loadCoffees()
+    loadProducts()
   }, [])
 
   const handleAdd = async (e) => {
     e.preventDefault()
-    const coffeeId = form.coffeeId.trim()
+    const productId = form.productId.trim()
     const name = form.name.trim()
     const price = Number(form.price)
 
-    if (!coffeeId || !name || !price) {
-      setError('Enter a coffee ID, a name, and a price above 0.')
+    if (!productId || !name || !price) {
+      setError('Enter a product ID, a name, and a price above 0.')
       return
     }
 
     try {
       setSaving(true)
       setError('')
-      await request(COFFEE_URL, {
+      await request(PRODUCT_URL, {
         method: 'POST',
-        body: JSON.stringify({ coffeeId, name, price, available: form.available }),
+        body: JSON.stringify({ productId, name, price, available: form.available }),
       })
       setForm(emptyForm)
-      await loadCoffees()
+      await loadProducts()
     } catch (err) {
       setError(err.message)
     } finally {
@@ -97,16 +97,16 @@ export default function App() {
     }
   }
 
-  const startEdit = (coffee) => {
-    setEditingId(coffee.coffeeId)
+  const startEdit = (product) => {
+    setEditingId(product.productId)
     setEditForm({
-      name: coffee.name ?? '',
-      price: coffee.price ?? '',
-      available: Boolean(coffee.available),
+      name: product.name ?? '',
+      price: product.price ?? '',
+      available: Boolean(product.available),
     })
   }
 
-  const handleUpdate = async (coffeeId) => {
+  const handleUpdate = async (productId) => {
     const name = editForm.name.trim()
     const price = Number(editForm.price)
 
@@ -117,36 +117,36 @@ export default function App() {
 
     try {
       setError('')
-      await request(`${COFFEE_URL}/${encodeURIComponent(coffeeId)}`, {
+      await request(`${PRODUCT_URL}/${encodeURIComponent(productId)}`, {
         method: 'PUT',
         body: JSON.stringify({ name, price, available: editForm.available }),
       })
       setEditingId(null)
-      await loadCoffees()
+      await loadProducts()
     } catch (err) {
       setError(err.message)
     }
   }
 
-  const handleDelete = async (coffeeId) => {
+  const handleDelete = async (productId) => {
     try {
       setError('')
-      await request(`${COFFEE_URL}/${encodeURIComponent(coffeeId)}`, { method: 'DELETE' })
-      if (detail?.coffeeId === coffeeId) setDetail(null)
-      await loadCoffees()
+      await request(`${PRODUCT_URL}/${encodeURIComponent(productId)}`, { method: 'DELETE' })
+      if (detail?.productId === productId) setDetail(null)
+      await loadProducts()
     } catch (err) {
       setError(err.message)
     }
   }
 
-  const handleDetails = async (coffeeId) => {
-    if (detail?.coffeeId === coffeeId) {
+  const handleDetails = async (productId) => {
+    if (detail?.productId === productId) {
       setDetail(null)
       return
     }
     try {
       setError('')
-      const data = await request(`${COFFEE_URL}/${encodeURIComponent(coffeeId)}`)
+      const data = await request(`${PRODUCT_URL}/${encodeURIComponent(productId)}`)
       setDetail(toItem(data))
     } catch (err) {
       setError(err.message)
@@ -155,7 +155,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1>Coffee List</h1>
+      <h1>Product Inventory</h1>
 
       {!API_URL && (
         <p className="message error">
@@ -165,12 +165,12 @@ export default function App() {
       )}
       {error && <p className="message error">{error}</p>}
 
-      <form className="coffee-form" onSubmit={handleAdd}>
+      <form className="product-form" onSubmit={handleAdd}>
         <input
           type="text"
-          placeholder="Coffee ID"
-          value={form.coffeeId}
-          onChange={(e) => setForm({ ...form, coffeeId: e.target.value })}
+          placeholder="Product ID"
+          value={form.productId}
+          onChange={(e) => setForm({ ...form, productId: e.target.value })}
         />
         <input
           type="text"
@@ -195,19 +195,19 @@ export default function App() {
           Available
         </label>
         <button type="submit" className="primary" disabled={saving}>
-          Add Coffee
+          Add Product
         </button>
       </form>
 
-      {loading && <p>Loading coffee...</p>}
-      {!loading && API_URL && coffees.length === 0 && !error && (
-        <p>No coffee yet. Add your first item above.</p>
+      {loading && <p>Loading product...</p>}
+      {!loading && API_URL && products.length === 0 && !error && (
+        <p>No product yet. Add your first item above.</p>
       )}
 
-      <div className="coffee-list">
-        {coffees.map((coffee) => (
-          <div className="coffee-card" key={coffee.coffeeId}>
-            {editingId === coffee.coffeeId ? (
+      <div className="product-list">
+        {products.map((product) => (
+          <div className="product-card" key={product.productId}>
+            {editingId === product.productId ? (
               <div className="edit-form">
                 <input
                   type="text"
@@ -230,7 +230,7 @@ export default function App() {
                   Available
                 </label>
                 <div className="actions">
-                  <button className="primary small" onClick={() => handleUpdate(coffee.coffeeId)}>
+                  <button className="primary small" onClick={() => handleUpdate(product.productId)}>
                     Save
                   </button>
                   <button className="secondary small" onClick={() => setEditingId(null)}>
@@ -240,23 +240,23 @@ export default function App() {
               </div>
             ) : (
               <>
-                <h3>{coffee.name}</h3>
+                <h3>{product.name}</h3>
                 <img src={reactLogo} alt="" className="logo" />
-                <p>Price: ${coffee.price}</p>
-                <p>{coffee.available ? 'Available' : 'Not Available'}</p>
+                <p>Price: ${product.price}</p>
+                <p>{product.available ? 'Available' : 'Not Available'}</p>
 
-                {detail?.coffeeId === coffee.coffeeId && (
-                  <p className="detail">ID: {detail.coffeeId}</p>
+                {detail?.productId === product.productId && (
+                  <p className="detail">ID: {detail.productId}</p>
                 )}
 
                 <div className="actions">
-                  <button className="secondary small" onClick={() => handleDetails(coffee.coffeeId)}>
-                    {detail?.coffeeId === coffee.coffeeId ? 'Hide' : 'Details'}
+                  <button className="secondary small" onClick={() => handleDetails(product.productId)}>
+                    {detail?.productId === product.productId ? 'Hide' : 'Details'}
                   </button>
-                  <button className="primary small" onClick={() => startEdit(coffee)}>
+                  <button className="primary small" onClick={() => startEdit(product)}>
                     Edit
                   </button>
-                  <button className="danger small" onClick={() => handleDelete(coffee.coffeeId)}>
+                  <button className="danger small" onClick={() => handleDelete(product.productId)}>
                     Delete
                   </button>
                 </div>

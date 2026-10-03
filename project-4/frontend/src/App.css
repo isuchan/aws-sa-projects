@@ -96,13 +96,13 @@ button.small {
 }
 
 /* The main Add button is narrow, so the label wraps onto two lines (as in the original). */
-.coffee-form button.primary {
-  width: 83px;
-  margin-bottom: 10px;
+.product-form button.primary {
+  width: 100px;
+  margin: 16px;
 }
 
 /* ---------- Cards ---------- */
-.coffee-list {
+.product-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -110,7 +110,7 @@ button.small {
   margin-top: 4px;
 }
 
-.coffee-card {
+.product-card {
   width: 192px;
   padding: 16px 12px;
   background: #d9b45f;
@@ -118,24 +118,24 @@ button.small {
   color: #213547;
 }
 
-.coffee-card h3 {
+.product-card h3 {
   margin: 14px 0 12px;
   font-size: 17px;
   color: #1c2833;
   overflow-wrap: anywhere;
 }
 
-.coffee-card p {
+.product-card p {
   margin: 14px 0;
   font-size: 15px;
 }
 
-.coffee-card .logo {
+.product-card .logo {
   width: 36px;
   height: 32px;
 }
 
-.coffee-card .detail {
+.product-card .detail {
   font-size: 13px;
   font-weight: 600;
   margin: 8px 0;
