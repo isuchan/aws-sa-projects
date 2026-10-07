@@ -245,13 +245,13 @@ export default function App() {
                 <p>Price: ${product.price}</p>
                 <p>{product.available ? 'Available' : 'Not Available'}</p>
 
-                {detail?.productId === product.productId && (
+                {detail?.productId === product.id && (
                   <p className="detail">ID: {detail.productId}</p>
                 )}
 
                 <div className="actions">
                   <button className="secondary small" onClick={() => handleDetails(product.productId)}>
-                    {detail?.productId === product.productId ? 'Hide' : 'Details'}
+                    {detail?.productId === product.id ? 'Hide' : 'Details'}
                   </button>
                   <button className="primary small" onClick={() => startEdit(product)}>
                     Edit
