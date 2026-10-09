@@ -250,13 +250,13 @@ export default function App() {
                 )}
 
                 <div className="actions">
-                  <button className="secondary small" onClick={() => handleDetails(product.productId)}>
+                  <button className="secondary small" onClick={() => handleDetails(product.id)}>
                     {detail?.productId === product.id ? 'Hide' : 'Details'}
                   </button>
                   <button className="primary small" onClick={() => startEdit(product)}>
                     Edit
                   </button>
-                  <button className="danger small" onClick={() => handleDelete(product.productId)}>
+                  <button className="danger small" onClick={() => handleDelete(product.id)}>
                     Delete
                   </button>
                 </div>
