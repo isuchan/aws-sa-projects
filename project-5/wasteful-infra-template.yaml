@@ -151,7 +151,7 @@ Resources:
   FrontendBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub 'costguardian-frontend-${AWS::AccountId}-${AWS::Region}'
+      BucketName: !Sub 'costmanager-frontend-${AWS::AccountId}-${AWS::Region}'
       PublicAccessBlockConfiguration:
         BlockPublicAcls: false
         BlockPublicPolicy: false
