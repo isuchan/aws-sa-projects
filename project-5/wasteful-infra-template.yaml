@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Simple wasteful infrastructure for Cloud Cost Guardian project
+Description: Simple wasteful infrastructure for Cloud Cost Manager project
 
 Parameters:
   VpcId:
@@ -32,7 +32,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
 
   # Oversized EC2 Instance 1
   OversizedInstance1:
@@ -54,9 +54,9 @@ Resources:
           echo "<p>Should be t3.micro - Still wasting ~$15/month</p>" >> /var/www/html/index.html
       Tags:
         - Key: Name
-          Value: CostGuardian-Oversized1
+          Value: CostManager-Oversized1
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
         - Key: CostOptimization
           Value: Oversized instance
 
@@ -80,9 +80,9 @@ Resources:
           echo "<p>Should be t3.micro - Still wasting ~$15/month</p>" >> /var/www/html/index.html
       Tags:
         - Key: Name
-          Value: CostGuardian-Oversized2
+          Value: CostManager-Oversized2
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
         - Key: CostOptimization
           Value: Oversized instance
 
@@ -94,9 +94,9 @@ Resources:
       AvailabilityZone: !GetAtt OversizedInstance1.AvailabilityZone
       Tags:
         - Key: Name
-          Value: CostGuardian-UnattachedVolume1
+          Value: CostManager-UnattachedVolume1
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
         - Key: CostOptimization
           Value: Unattached volume
 
@@ -107,9 +107,9 @@ Resources:
       AvailabilityZone: !GetAtt OversizedInstance2.AvailabilityZone
       Tags:
         - Key: Name
-          Value: CostGuardian-UnattachedVolume2
+          Value: CostManager-UnattachedVolume2
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
         - Key: CostOptimization
           Value: Unattached volume
 
@@ -120,9 +120,9 @@ Resources:
       AvailabilityZone: !GetAtt OversizedInstance1.AvailabilityZone
       Tags:
         - Key: Name
-          Value: CostGuardian-UnattachedVolume3
+          Value: CostManager-UnattachedVolume3
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
         - Key: CostOptimization
           Value: Unattached volume
 
@@ -133,9 +133,9 @@ Resources:
       Domain: vpc
       Tags:
         - Key: Name
-          Value: CostGuardian-UnattachedEIP1
+          Value: CostManager-UnattachedEIP1
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
 
   UnattachedEIP2:
     Type: AWS::EC2::EIP
@@ -143,9 +143,9 @@ Resources:
       Domain: vpc
       Tags:
         - Key: Name
-          Value: CostGuardian-UnattachedEIP2
+          Value: CostManager-UnattachedEIP2
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
 
   # S3 Bucket for Frontend (Manual Upload) - Public access for demo
   FrontendBucket:
@@ -162,7 +162,7 @@ Resources:
         ErrorDocument: error.html
       Tags:
         - Key: Project
-          Value: CostGuardian
+          Value: CostManager
         - Key: CostOptimization
           Value: No lifecycle policy
         - Key: Usage
